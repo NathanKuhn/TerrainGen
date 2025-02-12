@@ -1,4 +1,4 @@
-from PIL import Image
+from PIL import Image, ImageFilter
 import numpy as np
 import albumentations as A
 import os
@@ -46,7 +46,7 @@ def process_image(args):
     for _ in range(SAMPLE_COUNT):
         sample = TRANSFORM(image=image)["image"]
 
-        if np.max(sample) - np.min(sample) > 0.1:
+        if np.std(sample) > 50:
             samples.append(sample)
 
     print(f"Image: {i:3} | Samples: {len(samples):3}")
