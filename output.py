@@ -57,8 +57,8 @@ def main():
     heightmaps = np.load("dataset/terrain_dataset.npy")
 
     write_heightmap(
-        heightmaps[1000],
-        "save",
+        heightmaps[12],
+        "D:\\Programming\\Rust\\circuit-game\\target\\debug\\save",
     )
 
 
