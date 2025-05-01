@@ -1,6 +1,7 @@
 import numpy as np
+import random
 
-WORLD_SIZE = (16, 16, 4)
+WORLD_SIZE = (12, 12, 4)
 CHUNK_SIZE = 64
 
 I16_MAX = 2**15 - 1
@@ -72,6 +73,7 @@ def write_heightmap(heightmap: np.ndarray, filename):
     heightmap = heightmap.astype(np.float32)
     heightmap -= min_height
     heightmap /= max_height - min_height
+    ns = []
 
     with open(filename, "wb") as f:
         block_data = np.zeros((CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE), dtype=np.uint16)
@@ -89,23 +91,32 @@ def write_heightmap(heightmap: np.ndarray, filename):
                             fx = wx / (CHUNK_SIZE * WORLD_SIZE[0])
                             fy = wy / (CHUNK_SIZE * WORLD_SIZE[1])
 
-                            height = sample_height(heightmap, fx, fy) * CHUNK_SIZE
+                            v = sample_height(heightmap, fx, fy)
+                            height = v * CHUNK_SIZE
+
+                            normal_data[x, y] = sample_normal(
+                                heightmap, fx, fy, scale=CHUNK_SIZE * CHUNK_SIZE * WORLD_SIZE[0] / heightmap.shape[0]
+                            )
+
+                            n = normal_data[x, y]
+                            n = 1 - n[2]
+                            n = (n - 0.9278) / (0.9376 - 0.9278)
 
                             for z in range(CHUNK_SIZE):
                                 wz = z + z_chunk * CHUNK_SIZE
-                                block_data[x, y, z] = 1 if wz < height else 0
-
-                            normal_data[x, y] = sample_normal(
-                                heightmap, fx, fy, scale=CHUNK_SIZE
-                            )
+                                if wz < height:
+                                    if n < random.random() * 0.5 + 0.25:
+                                        block_data[x, y, z] = 1
+                                    else:
+                                        block_data[x, y, z] = 2
+                                else:
+                                    block_data[x, y, z] = 0
 
                     for z in range(CHUNK_SIZE):
                         for y in range(CHUNK_SIZE):
                             for x in range(CHUNK_SIZE):
-                                if block_data[x, y, z] > 0:
-                                    f.write(b"\x02\x00")
-                                else:
-                                    f.write(b"\x00\x00")
+                                val = int(block_data[x, y, z])
+                                f.write(val.to_bytes(2, "little"))
 
                     for y in range(CHUNK_SIZE):
                         for x in range(CHUNK_SIZE):
@@ -121,7 +132,7 @@ def main():
     heightmaps = np.load("dataset/terrain_dataset.npy")
 
     write_heightmap(
-        heightmaps[8],
+        heightmaps[102],
         "D:\\Programming\\Rust\\circuit-game\\target\\debug\\save",
     )
 

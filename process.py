@@ -6,12 +6,12 @@ from multiprocessing import Pool
 
 RAW_DATA_PATH = "raw/"
 DATASET_PATH = "dataset/"
-SAMPLE_COUNT = 1000  # Number of samples to take from each image
+SAMPLE_COUNT = 5000  # Number of samples to take from each image
 NUM_WORKERS = 8
 
 TRANSFORM = A.Compose(
     [
-        A.RandomCrop(width=256, height=256),
+        A.RandomCrop(width=64, height=64),
         A.HorizontalFlip(p=0.5),
         A.VerticalFlip(p=0.5),
     ]
