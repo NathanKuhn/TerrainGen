@@ -178,3 +178,5 @@ dataset/*.npy
 raw/*.tif
 save
 models/
+*.pt
+*.npy
