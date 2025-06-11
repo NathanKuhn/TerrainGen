@@ -181,7 +181,7 @@ class Generator(nn.Module):
                             beta_minmax=beta_minmax, device=DEVICE).to(DEVICE)
 
         # Laod the model weights
-        self.diffusion.load_state_dict(torch.load(f"models/terrain_diffusion_epoch_8.pth"))
+        self.diffusion.load_state_dict(torch.load(f"model.pth"))
 
     def forward(self, seed):
         torch.manual_seed(seed)
@@ -207,8 +207,7 @@ def show_sample():
     
     print(f"Time taken to generate image: {elapsed_time:.2f} seconds")
 
-    image = cv2.GaussianBlur(generated_image, (5, 5), 0)
-    print(image)
+    image = cv2.GaussianBlur(generated_image, (3, 3), 0)
 
     plt.imshow(image, cmap='gray')
     plt.axis('off')

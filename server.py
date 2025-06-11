@@ -40,6 +40,9 @@ class GenerationCache(Thread):
         if len(self.cache) == 0:
             return None
         else:
+            if len(self.cache) == 1:
+                return self.cache[0]
+            
             image = self.cache.pop(0)
             return image
 
