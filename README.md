@@ -2,6 +2,10 @@
 
 Using a custom diffusion model to generate terrain heightmaps.
 
+Model definitions and training code adopted from:
+
+https://github.com/Jackson-Kang/Pytorch-Diffusion-Model-Tutorial
+
 ## Training
 Place `.tif` heightmaps in the `raw` directory and run the `process.py` script to process the data.
 
